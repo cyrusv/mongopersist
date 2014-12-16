@@ -602,6 +602,7 @@ def doctest_MongoContainer_add_MongoContainer():
       >>> dm.root['people'] = container.MongoContainer(
       ...     'person', mapping_key='name')
       >>> dm.root['people'].add(Person(u'Stephan'))
+      u'Stephan'
 
     Let's now search and receive documents as result:
 
@@ -622,6 +623,7 @@ def doctest_MongoContainer_add_IdNamesMongoContainer():
       >>> transaction.commit()
       >>> dm.root['people'] = container.IdNamesMongoContainer('person')
       >>> dm.root['people'].add(Person(u'Stephan'))
+      u'...
 
     Let's now search and receive documents as result:
 
@@ -798,6 +800,7 @@ def doctest_IdNamesMongoContainer_basic():
     Let's now add a new person:
 
       >>> dm.root['c'].add(Person(u'Stephan'))
+      u'...
       >>> keys = dm.root['c'].keys()
       >>> keys
       [u'4e7ddf12e138237403000003']
@@ -1269,8 +1272,10 @@ def doctest_firing_events_MongoContainer():
       ...     people.add(PeoplePerson(name, random.randint(0, 100)))
       <zope.lifecycleevent.ObjectAddedEvent object at ...>
       <zope.container.contained.ContainerModifiedEvent object at ...>
+      'Mr Number...
       <zope.lifecycleevent.ObjectAddedEvent object at ...>
       <zope.container.contained.ContainerModifiedEvent object at ...>
+      'Mr Number...
       >>> transaction.commit()
       >>> list(people.keys())
       [u'Mr Number 00000', u'Mr Number 00001', u'Mr Number 00010', u'Mr Number 00011']
@@ -1324,8 +1329,10 @@ def doctest_firing_events_IdNamesMongoContainer():
       ...     people.add(PeoplePerson(name, random.randint(0, 100)))
       <zope.lifecycleevent.ObjectAddedEvent object at ...>
       <zope.container.contained.ContainerModifiedEvent object at ...>
+      u'...
       <zope.lifecycleevent.ObjectAddedEvent object at ...>
       <zope.container.contained.ContainerModifiedEvent object at ...>
+      u'...
       >>> transaction.commit()
       >>> list(people.keys())
       [u'4e7ddf12e138237403000000', u'4e7ddf12e138237403000000', u'4e7ddf12e138237403000000', u'4e7ddf12e138237403000000']

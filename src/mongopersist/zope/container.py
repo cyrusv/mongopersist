@@ -273,25 +273,33 @@ class MongoContainer(contained.Contained,
     def __setitem__(self, key, value):
         # When the key is None, we need to determine it.
         if key is None:
-            if self._m_mapping_key is None:
-                # Make sure the value is in the database, since we might want
-                # to use its oid.
-                if value._p_oid is None:
-                    self._m_jar.insert(value)
-                key = unicode(value._p_oid.id)
-            else:
-                # we have _m_mapping_key, use that attribute
-                key = getattr(value, self._m_mapping_key)
+            key = self._get_key(value)
+
         # We want to be as close as possible to using the Zope semantics.
         contained.setitem(self, self._real_setitem, key, value)
         # Also add the item to the container cache.
         self._cache[key] = value
 
+    def _get_key(self, value):
+        if self._m_mapping_key is None:
+            # Make sure the value is in the database, since we might want
+            # to use its oid.
+            if value._p_oid is None:
+                self._m_jar.insert(value)
+            key = unicode(value._p_oid.id)
+        else:
+            # we have _m_mapping_key, use that attribute
+            key = getattr(value, self._m_mapping_key)
+        return key
+
     def add(self, value, key=None):
         # We are already supporting ``None`` valued keys, which prompts the key
         # to be determined here. But people felt that a more explicit
         # interface would be better in this case.
+        if key is None:
+            key = self._get_key(value)
         self[key] = value
+        return key
 
     def __delitem__(self, key):
         value = self[key]
